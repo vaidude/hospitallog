@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat List</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <h1 class="text-3xl font-bold text-blue-600 mb-6">Select a User to Chat</h1>
+
+    <div class="w-full max-w-lg bg-white p-4 rounded-lg shadow-lg">
+        
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Buyers</h2>
+            <ul>
+                {% for buyer in buyers %}
+                <li class="mb-2">
+                    <a href="{% url 'chat_detail' 'buyer' buyer.email %}" class="flex items-center gap-3 p-3 rounded-lg bg-green-50 hover:bg-green-100 transition">
+                        <img src="{{ buyer.profile.url }}" alt="Profile" class="w-10 h-10 rounded-full">
+                        <span class="text-gray-800 font-medium">{{ buyer.email }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+   
+            <h2 class="text-xl font-semibold text-gray-700 mb-4">Farmers</h2>
+            <ul>
+                {% for farmer in farmers %}
+                <li class="mb-2">
+                    <a href="{% url 'chat_detail' 'farmer' farmer.email %}" class="flex items-center gap-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition">
+                        <img src="{{ farmer.dimage.url }}" alt="Profile" class="w-10 h-10 rounded-full">
+                        <span class="text-gray-800 font-medium">{{ farmer.email }}</span>
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+      
+    </div>
+
+</body>
+</html>

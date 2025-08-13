@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medical Chatbot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 h-screen flex flex-col justify-center items-center">
+    
+    <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4 text-center">Medical Chatbot</h2>
+        
+        <div id="chat-box" class="h-64 overflow-auto border p-3 mb-4 bg-gray-50 rounded"></div>
+
+        <input type="text" id="user-input" class="w-full p-2 border rounded" placeholder="Ask me anything...">
+        <button onclick="sendMessage()" class="mt-2 w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700">Send</button>
+    </div>
+
+    <script>
+        async function sendMessage() {
+            let userInput = document.getElementById("user-input").value;
+            if (!userInput) return;
+            
+            let chatBox = document.getElementById("chat-box");
+            chatBox.innerHTML += `<div class="p-2 bg-blue-100 rounded-md mb-2"><strong>You:</strong> ${userInput}</div>`;
+
+            document.getElementById("user-input").value = "";
+
+            let response = await fetch("/chatbot/api/", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({ message: userInput }),
+            });
+
+            let data = await response.json();
+            chatBox.innerHTML += `<div class="p-2 bg-gray-200 rounded-md mb-2"><strong>Bot:</strong> ${data.response}</div>`;
+        }
+    </script>
+
+</body>
+</html>

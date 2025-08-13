@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat with {{ receiver.email }}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex flex-col items-center p-6">
+
+    <div class="w-full max-w-lg bg-white rounded-lg shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 text-white flex items-center p-4">
+            <img src="{% if receiver.profile_pic %}{{ receiver.profile_pic.url }}{% elif receiver.profile %}{{ receiver.profile.url }}{% else %}https://via.placeholder.com/50{% endif %}" 
+                 class="w-10 h-10 rounded-full mr-3">
+            <h1 class="text-lg font-semibold">{{ receiver.email }}</h1>
+        </div>
+
+        <!-- Chat Box -->
+        <div id="chat-box" class="p-4 h-96 overflow-y-auto flex flex-col space-y-4 bg-gray-50">
+            {% for message in messages %}
+                <div class="flex {% if message.sender == sender.email %}justify-end{% else %}justify-start{% endif %}">
+                    <div class="p-3 rounded-lg shadow-md {% if message.sender == sender.email %}bg-blue-500 text-white{% else %}bg-gray-300 text-gray-900{% endif %}">
+                        <p>{{ message.content }}</p>
+                        {% if message.media %}
+                            {% if message.media.name|lower|slice:"-3:" == "jpg" or message.media.name|lower|slice:"-3:" == "png" or message.media.name|lower|slice:"-4:" == "jpeg" %}
+                                <img src="{{ message.media.url }}" class="w-40 rounded-lg mt-2">
+                            {% elif message.media.name|lower|slice:"-3:" == "mp4" or message.media.name|lower|slice:"-3:" == "avi" or message.media.name|lower|slice:"-3:" == "mov" %}
+                                <video width="200" controls class="mt-2">
+                                    <source src="{{ message.media.url }}" type="video/mp4">
+                                </video>
+                            {% else %}
+                                <a href="{{ message.media.url }}" class="text-blue-600 underline mt-2">Download file</a>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Chat Input -->
+        <form method="post" enctype="multipart/form-data" class="p-4 flex gap-2 bg-white border-t">
+            {% csrf_token %}
+            <input type="text" name="content" placeholder="Type a message..." class="flex-grow p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+            <input type="file" name="media" class="hidden" id="file-input">
+            <label for="file-input" class="cursor-pointer p-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition">
+                📎
+            </label>
+            <button type="submit" class="p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">Send</button>
+        </form>
+    </div>
+
+</body>
+</html>
